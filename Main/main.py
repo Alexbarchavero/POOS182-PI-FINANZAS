@@ -1,4 +1,4 @@
-from tkinter import ttk, Tk, Toplevel, Frame, StringVar, BOTH, Label, Entry, Button, OptionMenu, END
+from tkinter import ttk, Tk, Toplevel, Frame, StringVar, BOTH, Label, Entry, Button, OptionMenu, END, DISABLED
 from tkinter import *
 from usuarios import *
 
@@ -35,6 +35,7 @@ w2.geometry("{}x{}+{}+{}".format(w2_ancho,w2_alto,x,y))
 panel2 = ttk.Notebook(w2)
 panel2.pack(fill = BOTH, expand = True)
 # Añadimos las pestañas al panel 2
+p2_0 = Frame(panel2)
 p2_1 = Frame(panel2)
 p2_2 = Frame(panel2)
 p2_3 = Frame(panel2)
@@ -42,6 +43,7 @@ p2_4 = Frame(panel2)
 p2_5 = Frame(panel2)
 p2_6 = Frame(panel2)
 # Nombramos las pestañas en el panel
+panel2.add(p2_0, text = "Datos")
 panel2.add(p2_1, text = "Ingreso")
 panel2.add(p2_2, text = "Gasto")
 panel2.add(p2_3, text = "Compra")
@@ -70,22 +72,23 @@ def exeSignUp():
 
 # Metodo: ejecutar iniciar sesion
 def exeLogin():
-    exe.login()
+    r = exe.login()
     ENnombre2.delete(0, END)
     ENcontra2.delete(0, END)
-    w1.withdraw()
-    w2.deiconify()
+    if r==True:
+        w1.withdraw()
+        w2.deiconify()
 
 # Metodo: ejecutar añadir transaccion
 def exeAddTransaccion():
     index = panel2.index(panel2.select())
-    if index==0:
+    if index==1:
         categoria = "Ingreso"
-    elif index==1:
-        categoria = "Gasto"
     elif index==2:
-        categoria = "Compra"
+        categoria = "Gasto"
     elif index==3:
+        categoria = "Compra"
+    elif index==4:
         categoria = "Pago"
     exe.addTransaccion(categoria)
 
@@ -134,11 +137,20 @@ ENnombre2.pack()
 
 LBcontra2 = Label(p1_2,text="Ingrese su Contraseña: ",font=("Century Gothic",12))
 LBcontra2.pack()
-ENcontra2 = Entry(p1_2,textvariable=contra)
+ENcontra2 = Entry(p1_2,textvariable=contra,show="*")
 ENcontra2.pack()
 
 btnIngreso = Button(p1_2,text="Ingresar",font=("Century Gothic",12),bg="light green",command=exeLogin)
 btnIngreso.pack()
+
+# Widgets ventana 2 pestaña 0
+ide = StringVar()
+name = StringVar()
+titu0 = Label(p2_0,text="Informacion de Usuario",fg="blue",font=("Century Gothic",16)).pack()
+idelb = Label(p2_0,text="Identificador:",font=("Century Gothic",12)).pack()
+ideentry = Entry(p2_0,textvariable=ide,state=DISABLED).pack()
+namelb = Label(p2_0,text="Nombre:",font=("Century Gothic",12)).pack()
+nameen = Entry(p2_0,textvariable=name,state=DISABLED).pack()
 
 # Etiquetas, entrys y botones de ventana 2, pestaña 1
 titu1 = Label(p2_1,text="Ingresos",fg="blue",font=("Century Gothic",16)).pack()

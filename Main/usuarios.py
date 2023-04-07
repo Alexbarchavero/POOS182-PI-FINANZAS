@@ -70,14 +70,18 @@ class usuarios:
                 if resultado:
                     self.__username__ = nombre
                     messagebox.showinfo("Exito","Inicio de sesión exitoso")
+                    self.r = True
                 else:
                     messagebox.showerror("Error","Usuario o contraseña incorrectos")
+                    self.r = False
                 conx.close()
+                return self.r
         except sqlite3.OperationalError:
             print("Error de consulta")
     
     def logout(self):
         self.__username__ = None
+        print("Cierre de sesion exitoso")
     
     def addTransaccion(self,categoria):
         try:
@@ -114,4 +118,9 @@ class usuarios:
             return registros
         except sqlite3.OperationalError:
             print("Error de consulta")
+    def showUserinfo(self):
+        try:
+            nombre = self.__nombre__.get()
+        except:
+            print("No jalo")
 #Según los 2 archivos que te acabo de proporcionar, 
