@@ -36,17 +36,22 @@ ventana.geometry("400x300")
 # Crear los widgets de la ventana
 categoria_label = tk.Label(ventana, text='Categoría:')
 categoria_var = tk.StringVar()
-categoria_var.set('Ingreso')
+categoria_var.set('Seleccionar')
 categoria_optionmenu = tk.OptionMenu(ventana, categoria_var, 'Ingreso', 'Gasto', 'Compra', 'Venta', 'Pago')
+
 tipo_label = tk.Label(ventana, text='Tipo:')
 tipo_var = tk.StringVar()
-tipo_var.set('Efectivo')
+tipo_var.set('Seleccionar')
 tipo_optionmenu = tk.OptionMenu(ventana, tipo_var, 'Efectivo', 'Tarjeta de Crédito', 'Tarjeta de Débito')
+
 descripcion_label = tk.Label(ventana, text='Descripción:')
 descripcion_entry = tk.Entry(ventana)
+
 monto_label = tk.Label(ventana, text='Monto:')
 monto_entry = tk.Entry(ventana)
+
 agregar_button = tk.Button(ventana, text='Agregar Transacción', command=agregar_transaccion)
+
 transacciones_label = tk.Label(ventana, text='Transacciones:')
 transacciones_listbox = tk.Listbox(ventana)
 
