@@ -11,6 +11,8 @@ class usuarios:
         self.__tipo__ = tipo
         self.__descripcion__ = descripcion
         self.__monto__ = monto
+        self.__presupuesto__ = 0
+        self.__impuestos__ = 0
     
     def conexionDB(self):
         try:
@@ -142,8 +144,8 @@ class usuarios:
                         c7.execute(conseguirIDEsql,data)
                         resultado = c7.fetchone()
                         conx.commit()
-                        return resultado
-                    ide = int(conseguirID())
+                        return resultado[0]
+                    ide = conseguirID()
                     answer = messagebox.askyesno("Confirmacion","¿Desea eliminar su cuenta?")
                     if answer:
                         consultaEliminarCuenta = "DELETE FROM tbUsuarios WHERE id = ?"
@@ -159,10 +161,17 @@ class usuarios:
     
     # -------------------------------------------------- Funciones de la ventana 2 -------------------------------------------------- #
     
+    def definirP(self,presupuesto):
+        try:
+            self.__presupuesto__ = float(presupuesto)
+            messagebox.showinfo("Presupuesto","Se ha definido un nuevo presupuesto de $"+str(self.__presupuesto__))
+        except:
+            print("No se pudo definir el presupuesto")
+    
     def addTransaccion(self,categoria):
         try:
             conx = self.conexionDB()
-            
+            c3 = conx.cursor()
             tipo = self.__tipo__.get()
             descripcion = self.__descripcion__.get()
             monto = self.__monto__.get()
@@ -170,28 +179,76 @@ class usuarios:
             contra = self.__contralogin__
             fecha = datetime.date.today().isoformat()
             
-            c3 = conx.cursor()
-            
-            if (tipo=="Seleccionar" or descripcion=="" or monto==""):
+            if (descripcion=="" or monto==""):
                 messagebox.showwarning("Advertencia!","Falta informacion!")
                 conx.close()
             else:
-                def conseguirID():
-                    data = (nombre,contra)
-                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                    c3.execute(conseguirIDEsql,data)
-                    resultado = c3.fetchone()
+                if (categoria=="Egreso" and float(monto)>self.__presupuesto__):
+                    messagebox.showwarning("Advertencia!","El monto excede el presupuesto dado!")
+                    self.__presupuesto__ = self.__presupuesto__
+                    conx.close()
+                    return self.__presupuesto__
+                else:
+                    def conseguirID():
+                        data = (nombre,contra)
+                        conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                        c3.execute(conseguirIDEsql,data)
+                        resultado = c3.fetchone()
+                        conx.commit()
+                        return resultado[0]
+                    ide = conseguirID()
+                    datos = (categoria, tipo, descripcion, monto, ide, fecha)
+                    consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
+                    c3.execute(consultaTransaccion,datos)
                     conx.commit()
-                    return resultado
-                ide = int(conseguirID())
-                datos = (categoria, tipo, descripcion, monto, ide, fecha)
-                consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
-                c3.execute(consultaTransaccion,datos)
-                conx.commit()
-                conx.close()
-                messagebox.showinfo("Exito!","Registro completo!")
+                    conx.close()
+                    if categoria=="Ingreso":
+                        self.__presupuesto__ += float(monto)
+                        messagebox.showinfo("Exito!","Registro completo!")
+                        self.__impuestos__ += round(float(monto)*0.16,2)
+                        return self.__presupuesto__
+                    if categoria=="Egreso":
+                        self.__presupuesto__ -= float(monto)
+                        messagebox.showinfo("Exito!","Registro completo!")
+                        return self.__presupuesto__
         except sqlite3.OperationalError:
             print("Error de consulta")
+    
+    def impuestos(self):
+        try:
+            conx = self.conexionDB()
+            c10 = conx.cursor()
+            nombre = self.__nombrelogin__
+            contra = self.__contralogin__
+            def conseguirID():
+                data = (nombre,contra)
+                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                c10.execute(conseguirIDEsql,data)
+                resultado = c10.fetchone()
+                conx.commit()
+                return resultado[0]
+            ide = conseguirID()
+
+            def obtenerUltimoImpuesto():
+                data = (ide,)
+                obtenerImpuestosSql = "SELECT impuesto FROM tbImpuestos WHERE usuario_id = ? ORDER BY fecha DESC LIMIT 1"
+                c10.execute(obtenerImpuestosSql, data)
+                resultado = c10.fetchone()
+                conx.commit()
+                return resultado[0] if resultado else 0.0
+
+            ultimo_impuesto = obtenerUltimoImpuesto()
+            impuesto = self.__impuestos__ + float(ultimo_impuesto)
+            fecha = datetime.date.today().isoformat()
+            data = (ide,impuesto,fecha)
+            sqlImpuestos = "INSERT INTO tbImpuestos (usuario_id, impuesto, fecha) VALUES (?, ?, ?)"
+            c10.execute(sqlImpuestos,data)
+            conx.commit()
+            conx.close()
+            return impuesto
+        except:
+            print("Error de consulta")
+
     
     def showTransacciones(self):
         try:
@@ -205,10 +262,10 @@ class usuarios:
                 c4.execute(conseguirIDEsql,data)
                 resultado = c4.fetchone()
                 conx.commit()
-                return resultado
-            ide = int(conseguirID())
+                return resultado[0]
+            ide = conseguirID()
             consultaMostrarTransacciones = "SELECT * FROM tbRegistros WHERE usuario_id = ?"
-            c4.execute(consultaMostrarTransacciones,ide)
+            c4.execute(consultaMostrarTransacciones,(ide,))
             registros = c4.fetchall()
             conx.commit()
             conx.close()
@@ -219,4 +276,6 @@ class usuarios:
     def logout(self):
         self.__nombre__ = None
         self.__contra__ = None
+        self.__presupuesto__ = 0
+        self.__impuestos__ = 0
         messagebox.showinfo("Cerrar sesion","Cierre de sesion exitoso")
