@@ -109,19 +109,25 @@ def exeAddTransaccion():
     index = panel2.index(panel2.select())
     if index==0:
         categoria = "Ingreso"
+        exe.addTransaccion(categoria)
+        ENdescripcion1.delete(0,END)
+        ENmonto1.delete(0,END)
     elif index==1:
         categoria = "Gasto"
+        ENdescripcion2.delete(0,END)
+        ENmonto2.delete(0,END)
+        exe.addTransaccion(categoria)
     elif index==2:
         categoria = "Compra"
+        ENdescripcion3.delete(0,END)
+        ENmonto3.delete(0,END)
+        exe.addTransaccion(categoria)
     elif index==3:
         categoria = "Pago"
-    exe.addTransaccion(categoria)
-
-# Metodo: ejecutar cerrar sesion
-def exeLogout():
-    exe.logout()
-    w2.destroy()
-    w1.deiconify()
+        ENdescripcion4.delete(0,END)
+        ENmonto4.delete(0,END)
+        exe.addTransaccion(categoria)
+    tipo.set("Seleccionar")
 
 # Metodo: ejecutar mostrar transacciones
 def exeShowTransacciones():
@@ -133,6 +139,12 @@ def exeShowTransacciones():
             tvTransacciones.insert("",END,values=cadena)
     else:
         messagebox.showinfo("Datos inexistentes","No hay registros para mostrar")
+
+# Metodo: ejecutar cerrar sesion
+def exeLogout():
+    exe.logout()
+    w2.destroy()
+    w1.deiconify()
     
 # -------------------------------------------------- Widgets de pestaña 1 -------------------------------------------------- #
 
@@ -211,50 +223,78 @@ btnDeleteAccount = Button(p1_4,text="Eliminar Cuenta",font=("Century Gothic",12)
 # -------------------------------------------------- Widgets de pestaña 2 -------------------------------------------------- #
 
 # Widgets ventana 2, pestaña 1
-titu1 = Label(p2_1,text="Ingresos",fg="green",font=("Century Gothic",16)).pack()
-LBtipo1 = Label(p2_1, text="Tipo:",font=("Century Gothic",12)).pack()
+titu1 = Label(p2_1,text="Ingresos",fg="green",font=("Century Gothic",16))
+titu1.pack()
+LBtipo1 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo1.pack()
 tipo.set("Seleccionar")
-OMtipo1 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito").pack()
-LBdescripcion1 = Label(p2_1, text="Descripción:",font=("Century Gothic",12)).pack()
-ENdescripcion1 = Entry(p2_1,textvariable=descripcion).pack()
-LBmonto1 = Label(p2_1, text="Monto:",font=("Century Gothic",12)).pack()
-ENmonto1 = Entry(p2_1,textvariable=monto).pack()
+OMtipo1 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo1.pack()
+LBdescripcion1 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion1.pack()
+ENdescripcion1 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion1.pack()
+LBmonto1 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto1.pack()
+ENmonto1 = Entry(p2_1,textvariable=monto)
+ENmonto1.pack()
 
 btnAddRegistro1 = Button(p2_1,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
 
 # Widgets ventana 2, pestaña 2
-titu2 = Label(p2_2,text="Gastos",fg="green",font=("Century Gothic",16)).pack()
-LBtipo2 = Label(p2_2, text="Tipo:",font=("Century Gothic",12)).pack()
+titu2 = Label(p2_2,text="Gastos",fg="green",font=("Century Gothic",16))
+titu2.pack()
+LBtipo2 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo2.pack()
 tipo.set("Seleccionar")
-OMtipo2 = OptionMenu(p2_2, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito").pack()
-LBdescripcion2 = Label(p2_2, text="Descripción:",font=("Century Gothic",12)).pack()
-ENdescripcion2 = Entry(p2_2,textvariable=descripcion).pack()
-LBmonto2 = Label(p2_2, text="Monto:",font=("Century Gothic",12)).pack()
-ENmonto2 = Entry(p2_2,textvariable=monto).pack()
+OMtipo2 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo2.pack()
+LBdescripcion2 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion2.pack()
+ENdescripcion2 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion2.pack()
+LBmonto2 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto2.pack()
+ENmonto2 = Entry(p2_1,textvariable=monto)
+ENmonto2.pack()
 
 btnAddRegistro2 = Button(p2_2,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
 
 # Widgets ventana 2, pestaña 3
-titu3 = Label(p2_3,text="Compras",fg="green",font=("Century Gothic",16)).pack()
-LBtipo3 = Label(p2_3, text="Tipo:",font=("Century Gothic",12)).pack()
+titu3 = Label(p2_3,text="Compras",fg="green",font=("Century Gothic",16))
+titu3.pack()
+LBtipo3 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo3.pack()
 tipo.set("Seleccionar")
-OMtipo3 = OptionMenu(p2_3, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito").pack()
-LBdescripcion3 = Label(p2_3, text="Descripción:",font=("Century Gothic",12)).pack()
-ENdescripcion3 = Entry(p2_3,textvariable=descripcion).pack()
-LBmonto3 = Label(p2_3, text="Monto:",font=("Century Gothic",12)).pack()
-ENmonto3 = Entry(p2_3,textvariable=monto).pack()
+OMtipo3 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo3.pack()
+LBdescripcion3 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion3.pack()
+ENdescripcion3 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion3.pack()
+LBmonto3 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto3.pack()
+ENmonto3 = Entry(p2_1,textvariable=monto)
+ENmonto3.pack()
 
 btnAddRegistro3 = Button(p2_3,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
 
 # Widgets ventana 2, pestaña 4
-titu4 = Label(p2_4,text="Pagos",fg="green",font=("Century Gothic",16)).pack()
-LBtipo4 = Label(p2_4, text="Tipo:",font=("Century Gothic",12)).pack()
+titu4 = Label(p2_4,text="Pagos",fg="green",font=("Century Gothic",16))
+titu4.pack()
+LBtipo4 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo4.pack()
 tipo.set("Seleccionar")
-OMtipo4 = OptionMenu(p2_4, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito").pack()
-LBdescripcion4 = Label(p2_4, text="Descripción:",font=("Century Gothic",12)).pack()
-ENdescripcion4 = Entry(p2_4,textvariable=descripcion).pack()
-LBmonto4 = Label(p2_4, text="Monto:",font=("Century Gothic",12)).pack()
-ENmonto4 = Entry(p2_4,textvariable=monto).pack()
+OMtipo4 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo4.pack()
+LBdescripcion4 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion4.pack()
+ENdescripcion4 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion4.pack()
+LBmonto4 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto4.pack()
+ENmonto4 = Entry(p2_1,textvariable=monto)
+ENmonto4.pack()
 
 btnAddRegistro4 = Button(p2_4,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
 
@@ -275,5 +315,5 @@ tvTransacciones.pack(expand=True, fill=BOTH)
 titu6 = Label(p2_6,text="Cerrar Sesion",fg="green",font=("Century Gothic",16)).pack()
 btnCloseSesion = Button(p2_6,text="Cerrar Sesion",font=("Century Gothic",12),command=exeLogout).pack()
 
-# Mainloop
+# -------------------------------------------------- MAINLOOP -------------------------------------------------- #
 w1.mainloop()
