@@ -1,6 +1,7 @@
-from tkinter import ttk, Tk, Toplevel, Frame, StringVar, BOTH, Label, Entry, Button, OptionMenu, END
+from tkinter import ttk, Tk, Toplevel, Frame, StringVar, BOTH, Label, Entry, Button, OptionMenu, END, BOTTOM
 from tkinter import *
 from usuarios import *
+import datetime
 
 # Creamos la ventana 1 centrada
 w1 = Tk()
@@ -58,15 +59,25 @@ w2.withdraw()
 # Variables
 name = StringVar()
 password = StringVar()
+nocuenta = StringVar()
+
 nombre = StringVar()
 contra = StringVar()
+cuenta = StringVar()
 categoria = StringVar()
 tipo = StringVar()
 descripcion = StringVar()
 monto = StringVar()
 
 # Instancia
-exe = usuarios(nombre,contra,categoria,tipo,descripcion,monto)
+exe = usuarios(nombre,contra,cuenta,categoria,tipo,descripcion,monto)
+
+# -------------------------------------------------- Metodo para la fecha actual -------------------------------------------------- #
+def actualizar_fecha(label):
+    fecha_actual = datetime.datetime.now()
+    fecha_formateada = fecha_actual.strftime('%d/%m/%Y %H:%M:%S')
+    label.config(text=fecha_formateada)
+    label.after(1000, actualizar_fecha, label)
 
 # -------------------------------------------------- Metodos de pestaña 1 -------------------------------------------------- #
 
@@ -75,6 +86,7 @@ def exeSignUp():
     exe.signup()
     ENnombre1.delete(0, END)
     ENcontra1.delete(0, END)
+    ENcuenta1.delete(0, END)
 
 # Metodo: ejecutar iniciar sesion
 def exeLogin():
@@ -87,14 +99,15 @@ def exeLogin():
 
 # Metodo: ejecutar actualizar info
 def exeUpdateInfo():
-    if name.get() and password.get():
-        exe.updateInfo(name.get(), password.get())
+    if name.get() and password.get() and nocuenta.get():
+        exe.updateInfo(name.get(), password.get(), nocuenta.get())
     else:
         messagebox.showwarning("Advertencia", "Los campos Nuevo Nombre y Nueva Contraseña son requeridos.")
     ENnombre3.delete(0,END)
     ENcontra3.delete(0,END)
     ENname1.delete(0,END)
     ENpass1.delete(0,END)
+    ENcuenta2.delete(0,END)
 
 # Metodo: ejecutar eliminar usuario
 def deleteUser():
@@ -162,8 +175,17 @@ LBcontra1.pack()
 ENcontra1 = Entry(p1_1,textvariable=contra)
 ENcontra1.pack()
 
+LBcuenta1 = Label(p1_1,text="Ingrese un numero de cuenta de banco: ",font=("Century Gothic",12))
+LBcuenta1.pack()
+ENcuenta1 = Entry(p1_1,textvariable=cuenta)
+ENcuenta1.pack()
+
 btnRegistro = Button(p1_1,text="Registrar",font=("Century Gothic",12),bg="light blue",command=exeSignUp)
 btnRegistro.pack()
+
+label_fecha1 = Label(p1_1, font=('Century Gothic', 12))
+label_fecha1.pack(side=BOTTOM,fill=BOTH,expand=True)
+actualizar_fecha(label_fecha1)
 
 # Widgets ventana 1, pestaña 2
 titulo2 = Label(p1_2,text="Iniciar Sesion",fg="green",font=("Century Gothic",16))
@@ -181,6 +203,10 @@ ENcontra2.pack()
 
 btnIngreso = Button(p1_2,text="Ingresar",font=("Century Gothic",12),bg="light green",command=exeLogin)
 btnIngreso.pack()
+
+label_fecha2 = Label(p1_2, font=('Century Gothic', 12))
+label_fecha2.pack(side=BOTTOM,fill=BOTH,expand=True)
+actualizar_fecha(label_fecha2)
 
 # Widgets Ventana 1 Pestaña 3
 titulo3 = Label(p1_3,text="Actualizar informacion de la cuenta",fg="green",font=("Century Gothic",16))
@@ -203,7 +229,16 @@ LBpass1 = Label(p1_3,text="Nueva contraseña:",font=("Century Gothic",12))
 LBpass1.pack()
 ENpass1 = Entry(p1_3,textvariable=password)
 ENpass1.pack()
+LBcuenta2 = Label(p1_3,text="Nuevo numero de cuenta:",font=("Century Gothic",12))
+LBcuenta2.pack()
+ENcuenta2 = Entry(p1_3,textvariable=nocuenta)
+ENcuenta2.pack()
+
 btnUpdate = Button(p1_3,text="Actualizar Informacion",font=("Century Gothic",12),command=exeUpdateInfo).pack()
+
+label_fecha3 = Label(p1_3, font=('Century Gothic', 12))
+label_fecha3.pack(side=BOTTOM,fill=BOTH,expand=True)
+actualizar_fecha(label_fecha3)
 
 # Widgets Ventana 1 Pestaña 4
 titulo4 = Label(p1_4,text="Eliminar cuenta",fg="green",font=("Century Gothic",16))
@@ -219,6 +254,10 @@ ENcontra4 = Entry(p1_4,textvariable=contra)
 ENcontra4.pack()
 
 btnDeleteAccount = Button(p1_4,text="Eliminar Cuenta",font=("Century Gothic",12),command=deleteUser).pack()
+
+label_fecha4 = Label(p1_4, font=('Century Gothic', 12))
+label_fecha4.pack(side=BOTTOM,fill=BOTH,expand=True)
+actualizar_fecha(label_fecha4)
 
 # -------------------------------------------------- Widgets de pestaña 2 -------------------------------------------------- #
 
@@ -244,18 +283,18 @@ btnAddRegistro1 = Button(p2_1,text="Añadir transaccion",font=("Century Gothic",
 # Widgets ventana 2, pestaña 2
 titu2 = Label(p2_2,text="Gastos",fg="green",font=("Century Gothic",16))
 titu2.pack()
-LBtipo2 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo2 = Label(p2_2, text="Tipo:",font=("Century Gothic",12))
 LBtipo2.pack()
 tipo.set("Seleccionar")
-OMtipo2 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo2 = OptionMenu(p2_2, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
 OMtipo2.pack()
-LBdescripcion2 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion2 = Label(p2_2, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion2.pack()
-ENdescripcion2 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion2 = Entry(p2_2,textvariable=descripcion)
 ENdescripcion2.pack()
-LBmonto2 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto2 = Label(p2_2, text="Monto:",font=("Century Gothic",12))
 LBmonto2.pack()
-ENmonto2 = Entry(p2_1,textvariable=monto)
+ENmonto2 = Entry(p2_2,textvariable=monto)
 ENmonto2.pack()
 
 btnAddRegistro2 = Button(p2_2,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
@@ -263,18 +302,18 @@ btnAddRegistro2 = Button(p2_2,text="Añadir transaccion",font=("Century Gothic",
 # Widgets ventana 2, pestaña 3
 titu3 = Label(p2_3,text="Compras",fg="green",font=("Century Gothic",16))
 titu3.pack()
-LBtipo3 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo3 = Label(p2_3, text="Tipo:",font=("Century Gothic",12))
 LBtipo3.pack()
 tipo.set("Seleccionar")
-OMtipo3 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo3 = OptionMenu(p2_3, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
 OMtipo3.pack()
-LBdescripcion3 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion3 = Label(p2_3, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion3.pack()
-ENdescripcion3 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion3 = Entry(p2_3,textvariable=descripcion)
 ENdescripcion3.pack()
-LBmonto3 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto3 = Label(p2_3, text="Monto:",font=("Century Gothic",12))
 LBmonto3.pack()
-ENmonto3 = Entry(p2_1,textvariable=monto)
+ENmonto3 = Entry(p2_3,textvariable=monto)
 ENmonto3.pack()
 
 btnAddRegistro3 = Button(p2_3,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()
@@ -282,18 +321,18 @@ btnAddRegistro3 = Button(p2_3,text="Añadir transaccion",font=("Century Gothic",
 # Widgets ventana 2, pestaña 4
 titu4 = Label(p2_4,text="Pagos",fg="green",font=("Century Gothic",16))
 titu4.pack()
-LBtipo4 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
+LBtipo4 = Label(p2_4, text="Tipo:",font=("Century Gothic",12))
 LBtipo4.pack()
 tipo.set("Seleccionar")
-OMtipo4 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo4 = OptionMenu(p2_4, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
 OMtipo4.pack()
-LBdescripcion4 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
+LBdescripcion4 = Label(p2_4, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion4.pack()
-ENdescripcion4 = Entry(p2_1,textvariable=descripcion)
+ENdescripcion4 = Entry(p2_4,textvariable=descripcion)
 ENdescripcion4.pack()
-LBmonto4 = Label(p2_1, text="Monto:",font=("Century Gothic",12))
+LBmonto4 = Label(p2_4, text="Monto:",font=("Century Gothic",12))
 LBmonto4.pack()
-ENmonto4 = Entry(p2_1,textvariable=monto)
+ENmonto4 = Entry(p2_4,textvariable=monto)
 ENmonto4.pack()
 
 btnAddRegistro4 = Button(p2_4,text="Añadir transaccion",font=("Century Gothic",12),command=exeAddTransaccion).pack()

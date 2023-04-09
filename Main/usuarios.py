@@ -1,10 +1,12 @@
 from tkinter import messagebox
 import sqlite3
+import datetime
 
 class usuarios:
-    def __init__(self,nombre,contra,categoria,tipo,descripcion,monto):
+    def __init__(self,nombre,contra,nocuenta,categoria,tipo,descripcion,monto):
         self.__nombre__ = nombre
         self.__contra__ = contra
+        self.__nocuenta__ = nocuenta
         self.__categoria__ = categoria
         self.__tipo__ = tipo
         self.__descripcion__ = descripcion
@@ -25,13 +27,14 @@ class usuarios:
             conx = self.conexionDB()
             nombre = self.__nombre__.get()
             contra = self.__contra__.get()
-            if (nombre == "" or contra == ""):
+            nocuenta = self.__nocuenta__.get()
+            if (nombre == "" or contra == "" or nocuenta==""):
                 messagebox.showwarning("Advertencia","Campos incompletos")
                 conx.close()
             else:
                 c1 = conx.cursor()
-                datos = (nombre,contra)
-                consultaSignup = "INSERT INTO tbUsuarios(nombre, contrasena) VALUES(?,?)"
+                datos = (nombre,contra,nocuenta)
+                consultaSignup = "INSERT INTO tbUsuarios(nombre, contrasena, cuenta) VALUES(?,?,?)"
                 c1.execute(consultaSignup,datos)
                 conx.commit()
                 conx.close()
@@ -55,6 +58,8 @@ class usuarios:
                 resultado = c2.fetchone()
                 if resultado:
                     messagebox.showinfo("Exito","Inicio de sesión exitoso")
+                    self.__nombrelogin__ = nombre
+                    self.__contralogin__ = contra
                     r = True
                 else:
                     messagebox.showerror("Error","Usuario o contraseña incorrectos")
@@ -64,7 +69,7 @@ class usuarios:
         except sqlite3.OperationalError:
             print("Error de consulta")
     
-    def updateInfo(self, name, password):
+    def updateInfo(self, name, password, ncuenta):
         try:
             conx = self.conexionDB()
             nombre = self.__nombre__.get()
@@ -77,7 +82,7 @@ class usuarios:
                 def validar():
                     try:
                         datos1 = (nombre,contra)
-                        sql1 = "SELECT nombre, contrasena FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                        sql1 = "SELECT nombre, contrasena, cuenta FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
                         c6.execute(sql1,datos1)
                         resultado = c6.fetchone()
                         if resultado:
@@ -94,8 +99,8 @@ class usuarios:
                 else:
                     resultado = messagebox.askyesno("Confirmacion","¿Esta seguro de actualizar sus datos?")
                     if resultado:
-                        datos = (name,password,nombre)
-                        consultaUpdateInfo = "UPDATE tbUsuarios SET nombre = ?, contrasena = ? WHERE nombre = ?"
+                        datos = (name,password,ncuenta,nombre)
+                        consultaUpdateInfo = "UPDATE tbUsuarios SET nombre = ?, contrasena = ?, cuenta = ? WHERE nombre = ?"
                         c6.execute(consultaUpdateInfo,datos)
                         conx.commit()
                         conx.close()
@@ -138,7 +143,7 @@ class usuarios:
                         resultado = c7.fetchone()
                         conx.commit()
                         return resultado
-                    ide = conseguirID()
+                    ide = int(conseguirID())
                     answer = messagebox.askyesno("Confirmacion","¿Desea eliminar su cuenta?")
                     if answer:
                         consultaEliminarCuenta = "DELETE FROM tbUsuarios WHERE id = ?"
@@ -157,17 +162,30 @@ class usuarios:
     def addTransaccion(self,categoria):
         try:
             conx = self.conexionDB()
+            
             tipo = self.__tipo__.get()
             descripcion = self.__descripcion__.get()
             monto = self.__monto__.get()
-            if (descripcion=="" or monto==""):
+            nombre = self.__nombrelogin__
+            contra = self.__contralogin__
+            fecha = datetime.date.today().isoformat()
+            
+            c3 = conx.cursor()
+            
+            if (tipo=="Seleccionar" or descripcion=="" or monto==""):
                 messagebox.showwarning("Advertencia!","Falta informacion!")
                 conx.close()
             else:
-                usuario_id = self.obtenerId(self.__username__)
-                c3 = conx.cursor()
-                datos = (categoria, tipo, descripcion, monto, usuario_id)
-                consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id) VALUES (?, ?, ?, ?, ?)"
+                def conseguirID():
+                    data = (nombre,contra)
+                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                    c3.execute(conseguirIDEsql,data)
+                    resultado = c3.fetchone()
+                    conx.commit()
+                    return resultado
+                ide = int(conseguirID())
+                datos = (categoria, tipo, descripcion, monto, ide, fecha)
+                consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
                 c3.execute(consultaTransaccion,datos)
                 conx.commit()
                 conx.close()
@@ -178,11 +196,19 @@ class usuarios:
     def showTransacciones(self):
         try:
             conx = self.conexionDB()
-            usuario_id = self.obtenerId(self.__username__)
             c4 = conx.cursor()
-            datos = (usuario_id,)
-            consultaMostrarTransacciones = "SELECT * FROM tbRegistros where usuario_id = ?"
-            c4.execute(consultaMostrarTransacciones,datos)
+            nombre = self.__nombrelogin__
+            contra = self.__contralogin__
+            def conseguirID():
+                data = (nombre,contra)
+                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                c4.execute(conseguirIDEsql,data)
+                resultado = c4.fetchone()
+                conx.commit()
+                return resultado
+            ide = int(conseguirID())
+            consultaMostrarTransacciones = "SELECT * FROM tbRegistros WHERE usuario_id = ?"
+            c4.execute(consultaMostrarTransacciones,ide)
             registros = c4.fetchall()
             conx.commit()
             conx.close()
