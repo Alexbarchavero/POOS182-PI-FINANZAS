@@ -72,8 +72,10 @@ tipo = StringVar()
 descripcion = StringVar()
 monto = StringVar()
 
+impuesto=0
+
 # Instancia
-exe = usuarios(nombre,contra,cuenta,categoria,tipo,descripcion,monto)
+exe = usuarios()
 
 # -------------------------------------------------- Metodo para la fecha actual -------------------------------------------------- #
 def actualizar_fecha(label):
@@ -82,28 +84,44 @@ def actualizar_fecha(label):
     label.config(text=fecha_formateada)
     label.after(1000, actualizar_fecha, label)
 
+# --------------------------------------------- Metodo para reiniciar la ventana 2 --------------------------------------------- #
+
+def reset_w2():
+    # Reiniciamos los valores de ENpresupuesto, labelPresupuesto, ENdescripcion1, ENmonto1, ENdescripcion2, ENmonto2 y LBimpuestos
+    ENpresupuesto.delete(0, END)
+    labelPresupuesto.config(text="Presupuesto $0.00")
+    ENdescripcion1.delete(0, END)
+    ENmonto1.delete(0, END)
+    ENdescripcion2.delete(0, END)
+    ENmonto2.delete(0, END)
+    LBimpuestos.config(text="Impuestos $0.00")
+
+    # Reiniciamos los valores del árbol de transacciones
+    tvTransacciones.delete(*tvTransacciones.get_children())
+
 # -------------------------------------------------- Metodos de pestaña 1 -------------------------------------------------- #
 
 # Metodo: ejecutar registrar usuario
 def exeSignUp():
-    exe.signup()
+    exe.signup(nombre.get(),contra.get(),cuenta.get())
     ENnombre1.delete(0, END)
     ENcontra1.delete(0, END)
     ENcuenta1.delete(0, END)
 
 # Metodo: ejecutar iniciar sesion
 def exeLogin():
-    r = exe.login()
+    r = exe.login(nombre.get(),contra.get())
     ENnombre2.delete(0, END)
     ENcontra2.delete(0, END)
     if r==True:
-        w1.withdraw()
+        reset_w2()
         w2.deiconify()
+        w1.withdraw()
 
 # Metodo: ejecutar actualizar info
 def exeUpdateInfo():
-    if name.get() and password.get() and nocuenta.get():
-        exe.updateInfo(name.get(), password.get(), nocuenta.get())
+    if nombre.get() and contra.get() and name.get() and password.get() and nocuenta.get():
+        exe.updateInfo(nombre.get(), contra.get(), name.get(), password.get(), nocuenta.get())
     else:
         messagebox.showwarning("Advertencia", "Los campos Nuevo Nombre y Nueva Contraseña son requeridos.")
     ENnombre3.delete(0,END)
@@ -114,7 +132,7 @@ def exeUpdateInfo():
 
 # Metodo: ejecutar eliminar usuario
 def deleteUser():
-    exe.deleteAccount()
+    exe.deleteAccount(nombre.get(),contra.get())
     ENnombre4.delete(0,END)
     ENcontra4.delete(0,END)
 
@@ -132,28 +150,32 @@ def definirPresupuesto():
 
 # Metodo: ejecutar añadir transaccion
 def exeAddTransaccion():
+    global impuesto
     index = panel2.index(panel2.select())
     if index==1:
         categoria = "Ingreso"
-        tipo = tipoIngreso
+        tipo = tipoIngreso.get()
         if tipo=="Seleccionar":
             messagebox.showwarning("Advertencia!","Falta informacion!")
         else:
-            nuevop = exe.addTransaccion(categoria)
+            nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
             labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
+            impuesto = exe.registroImpuestos(monto.get())
         ENdescripcion1.delete(0,END)
         ENmonto1.delete(0,END)
+    
     elif index==2:
         categoria = "Egreso"
-        tipo = tipoEgreso
+        tipo = tipoEgreso.get()
         if tipo=="Seleccionar":
             messagebox.showwarning("Advertencia!","Falta informacion!")
         else:
-            nuevop = exe.addTransaccion(categoria)
+            nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
             labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
         ENdescripcion2.delete(0,END)
         ENmonto2.delete(0,END)
-    tipo.set("Seleccionar")
+    tipoEgreso.set("Seleccionar")
+    tipoIngreso.set("Seleccionar")
 
 # Metodo: ejecutar mostrar transacciones
 def exeShowTransacciones():
@@ -168,9 +190,10 @@ def exeShowTransacciones():
 
 # Metodo: ejecutar mostrar impuestos
 def exeimpuestos():
+    global impuesto
     respuesta = messagebox.askyesno("Confirmacion","¿Esta seguro de que desea consultar sus impuestos ahora?")
     if respuesta:
-        imp = exe.impuestos()
+        imp = exe.impuestos(impuesto)
         LBimpuestos.config(text=f"Impuestos ${imp}")
     else:
         messagebox.showinfo("Informacion","Impuestos no mostrados")
@@ -178,7 +201,7 @@ def exeimpuestos():
 # Metodo: ejecutar cerrar sesion
 def exeLogout():
     exe.logout()
-    w2.destroy()
+    w2.withdraw()
     w1.deiconify()
     
 # -------------------------------------------------- Widgets de pestaña 1 -------------------------------------------------- #
@@ -302,7 +325,7 @@ titu1.pack()
 LBtipo1 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
 LBtipo1.pack()
 tipoIngreso.set("Seleccionar")
-OMtipo1 = OptionMenu(p2_1, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo1 = OptionMenu(p2_1, tipoIngreso, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
 OMtipo1.pack()
 LBdescripcion1 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion1.pack()
@@ -321,7 +344,7 @@ titu2.pack()
 LBtipo2 = Label(p2_2, text="Tipo:",font=("Century Gothic",12))
 LBtipo2.pack()
 tipoEgreso.set("Seleccionar")
-OMtipo2 = OptionMenu(p2_2, tipo, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo2 = OptionMenu(p2_2, tipoEgreso, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
 OMtipo2.pack()
 LBdescripcion2 = Label(p2_2, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion2.pack()

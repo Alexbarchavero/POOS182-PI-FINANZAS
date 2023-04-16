@@ -1,0 +1,8 @@
+ENpresupuesto
+labelPresupuesto
+ENdescripcion1
+ENmonto1
+ENdescripcion2
+ENmonto2
+LBimpuestos
+tvTransacciones

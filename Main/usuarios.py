@@ -3,16 +3,9 @@ import sqlite3
 import datetime
 
 class usuarios:
-    def __init__(self,nombre,contra,nocuenta,categoria,tipo,descripcion,monto):
-        self.__nombre__ = nombre
-        self.__contra__ = contra
-        self.__nocuenta__ = nocuenta
-        self.__categoria__ = categoria
-        self.__tipo__ = tipo
-        self.__descripcion__ = descripcion
-        self.__monto__ = monto
-        self.__presupuesto__ = 0
+    def __init__(self):
         self.__impuestos__ = 0
+        self.__presupuesto__ = 0
     
     def conexionDB(self):
         try:
@@ -24,13 +17,10 @@ class usuarios:
     
     # -------------------------------------------------- Funciones de la ventana 1 -------------------------------------------------- #
     
-    def signup(self):
+    def signup(self,nombre,contra,nocuenta):
         try:
             conx = self.conexionDB()
-            nombre = self.__nombre__.get()
-            contra = self.__contra__.get()
-            nocuenta = self.__nocuenta__.get()
-            if (nombre == "" or contra == "" or nocuenta==""):
+            if (nombre == "" or contra== "" or nocuenta==""):
                 messagebox.showwarning("Advertencia","Campos incompletos")
                 conx.close()
             else:
@@ -44,11 +34,9 @@ class usuarios:
         except sqlite3.OperationalError:
             print("Error de consulta")
     
-    def login(self):
+    def login(self,nombre,contra):
         try:
             conx = self.conexionDB()
-            nombre = self.__nombre__.get()
-            contra = self.__contra__.get()
             if (nombre == "" or contra == ""):
                 messagebox.showwarning("Advertencia","Campos incompletos")
                 conx.close()
@@ -71,11 +59,9 @@ class usuarios:
         except sqlite3.OperationalError:
             print("Error de consulta")
     
-    def updateInfo(self, name, password, ncuenta):
+    def updateInfo(self, nombre, contra, name, password, ncuenta):
         try:
             conx = self.conexionDB()
-            nombre = self.__nombre__.get()
-            contra = self.__contra__.get()
             c6 = conx.cursor()
             if (nombre=="" or contra==""):
                 messagebox.showwarning("Advertencia","Faltan datos por ingresar")
@@ -113,11 +99,9 @@ class usuarios:
         except sqlite3.OperationalError:
             print("Error de consulta")
     
-    def deleteAccount(self):
+    def deleteAccount(self, nombre, contra):
         try:
             conx = self.conexionDB()
-            nombre = self.__nombre__.get()
-            contra = self.__contra__.get()
             c7 = conx.cursor()
             if (nombre=="" or contra==""):
                 messagebox.showwarning("Advertencia","Faltan datos")
@@ -168,15 +152,13 @@ class usuarios:
         except:
             print("No se pudo definir el presupuesto")
     
-    def addTransaccion(self,categoria):
+    def addTransaccion(self, categoria, tipo, descripcion, monto):
         try:
             conx = self.conexionDB()
             c3 = conx.cursor()
-            tipo = self.__tipo__.get()
-            descripcion = self.__descripcion__.get()
-            monto = self.__monto__.get()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
+            impuestosvar = 0
             fecha = datetime.date.today().isoformat()
             
             if (descripcion=="" or monto==""):
@@ -205,7 +187,6 @@ class usuarios:
                     if categoria=="Ingreso":
                         self.__presupuesto__ += float(monto)
                         messagebox.showinfo("Exito!","Registro completo!")
-                        self.__impuestos__ += round(float(monto)*0.16,2)
                         return self.__presupuesto__
                     if categoria=="Egreso":
                         self.__presupuesto__ -= float(monto)
@@ -214,7 +195,15 @@ class usuarios:
         except sqlite3.OperationalError:
             print("Error de consulta")
     
-    def impuestos(self):
+    def registroImpuestos(self,monto):
+        try:
+            impuestosvar = 0
+            impuestosvar += round(float(monto)*0.16,2)
+            return impuestosvar
+        except:
+            print("No jalo we")
+     
+    def impuestos(self,impuesto):
         try:
             conx = self.conexionDB()
             c10 = conx.cursor()
@@ -235,19 +224,21 @@ class usuarios:
                 c10.execute(obtenerImpuestosSql, data)
                 resultado = c10.fetchone()
                 conx.commit()
+                print("resultado: "+resultado[0])
                 return resultado[0] if resultado else 0.0
 
             ultimo_impuesto = obtenerUltimoImpuesto()
-            impuesto = self.__impuestos__ + float(ultimo_impuesto)
+            impuesto_actual = impuesto + float(ultimo_impuesto)
+            print("impuesto actual"+str(impuesto_actual))
             fecha = datetime.date.today().isoformat()
-            data = (ide,impuesto,fecha)
+            data = (ide,impuesto_actual,fecha)
             sqlImpuestos = "INSERT INTO tbImpuestos (usuario_id, impuesto, fecha) VALUES (?, ?, ?)"
             c10.execute(sqlImpuestos,data)
             conx.commit()
             conx.close()
-            return impuesto
-        except:
-            print("Error de consulta")
+            return impuesto_actual
+        except sqlite3.OperationalError as op:
+            print("Error de consulta: ", op)
 
     
     def showTransacciones(self):
