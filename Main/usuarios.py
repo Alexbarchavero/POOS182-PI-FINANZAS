@@ -158,7 +158,6 @@ class usuarios:
             c3 = conx.cursor()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
-            impuestosvar = 0
             fecha = datetime.date.today().isoformat()
             
             if (descripcion=="" or monto==""):
@@ -182,28 +181,25 @@ class usuarios:
                     datos = (categoria, tipo, descripcion, monto, ide, fecha)
                     consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
                     c3.execute(consultaTransaccion,datos)
-                    conx.commit()
-                    conx.close()
                     if categoria=="Ingreso":
                         self.__presupuesto__ += float(monto)
                         messagebox.showinfo("Exito!","Registro completo!")
+                        c90 = conx.cursor()
+                        imp = float(monto)*0.16
+                        data = (ide,imp,fecha)
+                        slqsentence = "INSERT INTO tbImpuestos (usuario_id,impuesto,fecha) VALUES (?, ?, ?)"
+                        c90.execute(slqsentence,data)
                         return self.__presupuesto__
                     if categoria=="Egreso":
                         self.__presupuesto__ -= float(monto)
                         messagebox.showinfo("Exito!","Registro completo!")
                         return self.__presupuesto__
+                    conx.commit()
+                    conx.close()
         except sqlite3.OperationalError:
             print("Error de consulta")
-    
-    def registroImpuestos(self,monto):
-        try:
-            impuestosvar = 0
-            impuestosvar += round(float(monto)*0.16,2)
-            return impuestosvar
-        except:
-            print("No jalo we")
      
-    def impuestos(self,impuesto):
+    def impuestos(self):
         try:
             conx = self.conexionDB()
             c10 = conx.cursor()
@@ -217,28 +213,36 @@ class usuarios:
                 conx.commit()
                 return resultado[0]
             ide = conseguirID()
-
-            def obtenerUltimoImpuesto():
-                data = (ide,)
-                obtenerImpuestosSql = "SELECT impuesto FROM tbImpuestos WHERE usuario_id = ? ORDER BY fecha DESC LIMIT 1"
-                c10.execute(obtenerImpuestosSql, data)
-                resultado = c10.fetchone()
-                conx.commit()
-                print("resultado: "+resultado[0])
-                return resultado[0] if resultado else 0.0
-
-            ultimo_impuesto = obtenerUltimoImpuesto()
-            impuesto_actual = impuesto + float(ultimo_impuesto)
-            print("impuesto actual"+str(impuesto_actual))
-            fecha = datetime.date.today().isoformat()
-            data = (ide,impuesto_actual,fecha)
-            sqlImpuestos = "INSERT INTO tbImpuestos (usuario_id, impuesto, fecha) VALUES (?, ?, ?)"
-            c10.execute(sqlImpuestos,data)
+            sql = "SELECT * FROM tbImpuestos WHERE usuario_id = ?"
+            c10.execute(sql,(ide,))
+            registros = c10.fetchall()
             conx.commit()
             conx.close()
-            return impuesto_actual
-        except sqlite3.OperationalError as op:
-            print("Error de consulta: ", op)
+            return registros
+        except sqlite3.OperationalError:
+            print("Error de consulta: ")
+    
+    def impTotales(self):
+        try:
+            conx = self.conexionDB()
+            c20 = conx.cursor()
+            nombre = self.__nombrelogin__
+            contra = self.__contralogin__
+            def conseguirID():
+                data = (nombre,contra)
+                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                c20.execute(conseguirIDEsql,data)
+                resultado = c20.fetchone()
+                conx.commit()
+                return resultado[0]
+            
+            ide = conseguirID()
+            sql = "SELECT SUM(impuesto) FROM tbImpuestos WHERE usuario_id = ?"
+            c20.execute(sql, (ide,))
+            resultado = c20.fetchone()[0]
+            return resultado
+        except sqlite3.OperationalError:
+            print("Error de consulta")
 
     
     def showTransacciones(self):

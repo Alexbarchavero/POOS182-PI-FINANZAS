@@ -94,7 +94,6 @@ def reset_w2():
     ENmonto1.delete(0, END)
     ENdescripcion2.delete(0, END)
     ENmonto2.delete(0, END)
-    LBimpuestos.config(text="Impuestos $0.00")
 
     # Reiniciamos los valores del árbol de transacciones
     tvTransacciones.delete(*tvTransacciones.get_children())
@@ -150,7 +149,6 @@ def definirPresupuesto():
 
 # Metodo: ejecutar añadir transaccion
 def exeAddTransaccion():
-    global impuesto
     index = panel2.index(panel2.select())
     if index==1:
         categoria = "Ingreso"
@@ -160,7 +158,6 @@ def exeAddTransaccion():
         else:
             nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
             labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
-            impuesto = exe.registroImpuestos(monto.get())
         ENdescripcion1.delete(0,END)
         ENmonto1.delete(0,END)
     
@@ -190,13 +187,22 @@ def exeShowTransacciones():
 
 # Metodo: ejecutar mostrar impuestos
 def exeimpuestos():
-    global impuesto
-    respuesta = messagebox.askyesno("Confirmacion","¿Esta seguro de que desea consultar sus impuestos ahora?")
-    if respuesta:
-        imp = exe.impuestos(impuesto)
-        LBimpuestos.config(text=f"Impuestos ${imp}")
+    tvImpuestos.delete(*tvImpuestos.get_children())
+    registros = exe.showTransacciones()
+    if registros:
+        for i in registros:
+            cadena = (i[0],i[1],i[2],i[3])
+            tvImpuestos.insert("",END,values=cadena)
     else:
-        messagebox.showinfo("Informacion","Impuestos no mostrados")
+        messagebox.showinfo("Datos inexistentes","No hay registros para mostrar")
+
+def exeimptotales():
+    totales = exe.impTotales()
+    respuesta = messagebox.askyesno("Confirmacion","¿Desea saber la cantidad de impuestos totales?")
+    if respuesta:
+        messagebox.showinfo("Impuestos totales",f"La cantidad total es de ${totales}")
+    else:
+        messagebox.showwarning("Consulta de impuestos","No se mostraron los impuestos totales")
 
 # Metodo: ejecutar cerrar sesion
 def exeLogout():
@@ -361,14 +367,21 @@ btnAddRegistro2 = Button(p2_2,text="Añadir transaccion",font=("Century Gothic",
 titu3 = Label(p2_3,text="Impuestos",fg="green",font=("Century Gothic",16))
 titu3.pack()
 
-btnConsultarImpuestos = Button(p2_3,text="Consultar impuestos",font=("Century Gothic",12),command=exeimpuestos).pack()
+tvImpuestos = ttk.Treeview(p2_3,columns=('id','usuario_id','impuesto','fecha'),show="headings")
+tvImpuestos.heading('#0', text="Index")
+tvImpuestos.heading('id', text="Numero")
+tvImpuestos.heading('usuario_id', text="Identificador de usuario")
+tvImpuestos.heading('impuesto', text="Impuesto")
+tvImpuestos.heading('fecha', text="Fecha")
+tvImpuestos.pack(expand=True, fill=BOTH)
 
-LBimpuestos = Label(p2_3, text="Impuestos: $0",font=("Century Gothic",12))
-LBimpuestos.pack(side=BOTTOM,fill=BOTH,expand=True)
+btnConsultarImpuestos = Button(p2_3,text="Consultar impuestos",font=("Century Gothic",12),command=exeimpuestos).pack()
+btnImpuestosTotales = Button(p2_3,text="Impuestos Totales",font=("Century Gothic",12),command=exeimptotales).pack()
 
 #Widgets Ventana 2 Pestaña 5
 titu5 = Label(p2_5,text="Consultar Movimientos",fg="green",font=("Century Gothic",16)).pack()
 btnConsultar = Button(p2_5,text="Consultar",font=("Century Gothic",16),command=exeShowTransacciones).pack()
+
 tvTransacciones = ttk.Treeview(p2_5,columns=('id','categoria','tipo','descripcion','monto','usuario_id','fecha'),show="headings")
 tvTransacciones.heading('#0',text="Index")
 tvTransacciones.heading('id',text="Id")
