@@ -44,15 +44,15 @@ presupuesto = Frame(panel2)
 p2_1 = Frame(panel2)
 p2_2 = Frame(panel2)
 p2_3 = Frame(panel2)
+p2_4 = Frame(panel2)
 p2_5 = Frame(panel2)
-p2_6 = Frame(panel2)
 # Nombramos las pestañas en el panel
 panel2.add(presupuesto, text = "Presupuesto")
 panel2.add(p2_1, text = "Ingreso")
 panel2.add(p2_2, text = "Egreso")
 panel2.add(p2_3, text = "Impuestos")
-panel2.add(p2_5, text = "Movimientos")
-panel2.add(p2_6, text = "Cerrar sesion")
+panel2.add(p2_4, text = "Movimientos")
+panel2.add(p2_5, text = "Cerrar sesion")
 # Ocultamos de inicio la ventana 2
 w2.withdraw()
 
@@ -378,11 +378,11 @@ tvImpuestos.pack(expand=True, fill=BOTH)
 btnConsultarImpuestos = Button(p2_3,text="Consultar impuestos",font=("Century Gothic",12),command=exeimpuestos).pack()
 btnImpuestosTotales = Button(p2_3,text="Impuestos Totales",font=("Century Gothic",12),command=exeimptotales).pack()
 
-#Widgets Ventana 2 Pestaña 5
-titu5 = Label(p2_5,text="Consultar Movimientos",fg="green",font=("Century Gothic",16)).pack()
-btnConsultar = Button(p2_5,text="Consultar",font=("Century Gothic",16),command=exeShowTransacciones).pack()
+#Widgets Ventana 2 Pestaña 4
+titu5 = Label(p2_4,text="Consultar Movimientos",fg="green",font=("Century Gothic",16)).pack()
+btnConsultar = Button(p2_4,text="Consultar",font=("Century Gothic",16),command=exeShowTransacciones).pack()
 
-tvTransacciones = ttk.Treeview(p2_5,columns=('id','categoria','tipo','descripcion','monto','usuario_id','fecha'),show="headings")
+tvTransacciones = ttk.Treeview(p2_4,columns=('id','categoria','tipo','descripcion','monto','usuario_id','fecha'),show="headings")
 tvTransacciones.heading('#0',text="Index")
 tvTransacciones.heading('id',text="Id")
 tvTransacciones.heading('categoria',text="Categoria")
@@ -393,9 +393,9 @@ tvTransacciones.heading('usuario_id',text="Identificador de Usuario")
 tvTransacciones.heading('fecha',text="Fecha")
 tvTransacciones.pack(expand=True, fill=BOTH)
 
-# Widgets Ventana 2 Pestaña 6
-titu6 = Label(p2_6,text="Cerrar Sesion",fg="green",font=("Century Gothic",16)).pack()
-btnCloseSesion = Button(p2_6,text="Cerrar Sesion",font=("Century Gothic",12),command=exeLogout).pack()
+# Widgets Ventana 2 Pestaña 5
+titu6 = Label(p2_5,text="Cerrar Sesion",fg="green",font=("Century Gothic",16)).pack()
+btnCloseSesion = Button(p2_5,text="Cerrar Sesion",font=("Century Gothic",12),command=exeLogout).pack()
 
 # -------------------------------------------------- MAINLOOP -------------------------------------------------- #
 w1.mainloop()
