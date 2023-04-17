@@ -137,7 +137,7 @@ class usuarios:
                     answer = messagebox.askyesno("Confirmacion","¿Desea eliminar su cuenta?")
                     if answer:
                         consultaEliminarCuenta = "DELETE FROM tbUsuarios WHERE id = ?"
-                        c4.execute(consultaEliminarCuenta,ide)
+                        c4.execute(consultaEliminarCuenta,(ide,))
                         conx.commit()
                         conx.close()
                         messagebox.showinfo("Exito","La cuenta ha sido eliminada correctamente")
