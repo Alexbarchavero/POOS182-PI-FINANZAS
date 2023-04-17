@@ -123,12 +123,16 @@ class usuarios:
                     conx.close()
                 else:
                     def conseguirID():
-                        data = (nombre,contra)
-                        conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                        c4.execute(conseguirIDEsql,data)
-                        resultado = c4.fetchone()
-                        conx.commit()
-                        return resultado[0]
+                        try:
+                            data = (nombre,contra)
+                            conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                            c4.execute(conseguirIDEsql,data)
+                            resultado = c4.fetchone()
+                            conx.commit()
+                            return resultado[0]
+                        except sqlite3.OperationalError:
+                            print("Error de consulta")
+                    
                     ide = conseguirID()
                     answer = messagebox.askyesno("Confirmacion","¿Desea eliminar su cuenta?")
                     if answer:
@@ -156,9 +160,33 @@ class usuarios:
         try:
             conx = self.conexionDB()
             c5 = conx.cursor()
+            c6 = conx.cursor()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
             fecha = datetime.date.today().isoformat()
+            
+            def conseguirID():
+                try:
+                    data = (nombre,contra)
+                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                    c6.execute(conseguirIDEsql,data)
+                    resultado = c6.fetchone()
+                    conx.commit()
+                    return resultado[0]
+                except sqlite3.OperationalError:
+                    print("Error de consulta")
+            
+            def registroTBimpuestos():
+                try:
+                    c6 = conx.cursor()
+                    imp = float(monto)*0.16
+                    data = (ide,imp,fecha)
+                    slqsentence = "INSERT INTO tbImpuestos (usuario_id,impuesto,fecha) VALUES (?, ?, ?)"
+                    c6.execute(slqsentence,data)
+                    conx.commit()
+                    conx.close()
+                except sqlite3.OperationalError:
+                    print("Error de consulta")
             
             if (descripcion=="" or monto==""):
                 messagebox.showwarning("Advertencia!","Falta informacion!")
@@ -170,13 +198,6 @@ class usuarios:
                     conx.close()
                     return self.__presupuesto__
                 else:
-                    def conseguirID():
-                        data = (nombre,contra)
-                        conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                        c5.execute(conseguirIDEsql,data)
-                        resultado = c5.fetchone()
-                        conx.commit()
-                        return resultado[0]
                     ide = conseguirID()
                     datos = (categoria, tipo, descripcion, monto, ide, fecha)
                     consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
@@ -184,13 +205,7 @@ class usuarios:
                     if categoria=="Ingreso":
                         self.__presupuesto__ += float(monto)
                         messagebox.showinfo("Exito!","Registro completo!")
-                        c5 = conx.cursor()
-                        imp = float(monto)*0.16
-                        data = (ide,imp,fecha)
-                        slqsentence = "INSERT INTO tbImpuestos (usuario_id,impuesto,fecha) VALUES (?, ?, ?)"
-                        c5.execute(slqsentence,data)
-                        conx.commit()
-                        conx.close()
+                        registroTBimpuestos()
                         return self.__presupuesto__
                     else:
                         self.__presupuesto__ -= float(monto)
@@ -203,20 +218,24 @@ class usuarios:
     def impuestos(self):
         try:
             conx = self.conexionDB()
-            c6 = conx.cursor()
+            c7 = conx.cursor()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
             def conseguirID():
-                data = (nombre,contra)
-                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                c6.execute(conseguirIDEsql,data)
-                resultado = c6.fetchone()
-                conx.commit()
-                return resultado[0]
+                try:
+                    data = (nombre,contra)
+                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                    c7.execute(conseguirIDEsql,data)
+                    resultado = c7.fetchone()
+                    conx.commit()
+                    return resultado[0]
+                except sqlite3.OperationalError:
+                    print("Error de consulta")
+            
             ide = conseguirID()
             sql = "SELECT * FROM tbImpuestos WHERE usuario_id = ?"
-            c6.execute(sql,(ide,))
-            registros = c6.fetchall()
+            c7.execute(sql,(ide,))
+            registros = c7.fetchall()
             conx.commit()
             conx.close()
             return registros
@@ -226,21 +245,24 @@ class usuarios:
     def impTotales(self):
         try:
             conx = self.conexionDB()
-            c7 = conx.cursor()
+            c8 = conx.cursor()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
             def conseguirID():
-                data = (nombre,contra)
-                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                c7.execute(conseguirIDEsql,data)
-                resultado = c7.fetchone()
-                conx.commit()
-                return resultado[0]
+                try:
+                    data = (nombre,contra)
+                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                    c8.execute(conseguirIDEsql,data)
+                    resultado = c8.fetchone()
+                    conx.commit()
+                    return resultado[0]
+                except sqlite3.OperationalError:
+                    print("Error de consulta")
             
             ide = conseguirID()
             sql = "SELECT SUM(impuesto) FROM tbImpuestos WHERE usuario_id = ?"
-            c7.execute(sql, (ide,))
-            resultado = c7.fetchone()[0]
+            c8.execute(sql, (ide,))
+            resultado = c8.fetchone()[0]
             return resultado
         except sqlite3.OperationalError:
             print("Error de consulta")
@@ -249,20 +271,24 @@ class usuarios:
     def showTransacciones(self):
         try:
             conx = self.conexionDB()
-            c8 = conx.cursor()
+            c9 = conx.cursor()
             nombre = self.__nombrelogin__
             contra = self.__contralogin__
             def conseguirID():
-                data = (nombre,contra)
-                conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
-                c8.execute(conseguirIDEsql,data)
-                resultado = c8.fetchone()
-                conx.commit()
-                return resultado[0]
+                try:
+                    data = (nombre,contra)
+                    conseguirIDEsql = "SELECT id FROM tbUsuarios WHERE nombre = ? and contrasena = ?"
+                    c9.execute(conseguirIDEsql,data)
+                    resultado = c9.fetchone()
+                    conx.commit()
+                    return resultado[0]
+                except sqlite3.OperationalError:
+                    print("Error de consulta")
+            
             ide = conseguirID()
             consultaMostrarTransacciones = "SELECT * FROM tbRegistros WHERE usuario_id = ?"
-            c8.execute(consultaMostrarTransacciones,(ide,))
-            registros = c8.fetchall()
+            c9.execute(consultaMostrarTransacciones,(ide,))
+            registros = c9.fetchall()
             conx.commit()
             conx.close()
             return registros
