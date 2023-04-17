@@ -157,8 +157,7 @@ def exeAddTransaccion():
         labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
         ENdescripcion1.delete(0,END)
         ENmonto1.delete(0,END)
-    
-    elif index==2:
+    else:
         categoria = "Egreso"
         tipo = tipoEgreso.get()
         nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
@@ -326,7 +325,7 @@ titu1.pack()
 LBtipo1 = Label(p2_1, text="Tipo:",font=("Century Gothic",12))
 LBtipo1.pack()
 tipoIngreso.set("Seleccionar")
-OMtipo1 = OptionMenu(p2_1, tipoIngreso, "Efectivo", "Tarjeta de Crédito", "Tarjeta de Débito")
+OMtipo1 = OptionMenu(p2_1, tipoIngreso, "Efectivo", "Tarjeta de Débito")
 OMtipo1.pack()
 LBdescripcion1 = Label(p2_1, text="Descripción:",font=("Century Gothic",12))
 LBdescripcion1.pack()
