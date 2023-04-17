@@ -153,24 +153,19 @@ def exeAddTransaccion():
     if index==1:
         categoria = "Ingreso"
         tipo = tipoIngreso.get()
-        if tipo=="Seleccionar":
-            messagebox.showwarning("Advertencia!","Falta informacion!")
-        else:
-            nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
-            labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
+        nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
+        labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
         ENdescripcion1.delete(0,END)
         ENmonto1.delete(0,END)
     
     elif index==2:
         categoria = "Egreso"
         tipo = tipoEgreso.get()
-        if tipo=="Seleccionar":
-            messagebox.showwarning("Advertencia!","Falta informacion!")
-        else:
-            nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
-            labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
+        nuevop = exe.addTransaccion(categoria,tipo,descripcion.get(),monto.get())
+        labelPresupuesto.config(text=f"Presupuesto ${nuevop}")
         ENdescripcion2.delete(0,END)
         ENmonto2.delete(0,END)
+    
     tipoEgreso.set("Seleccionar")
     tipoIngreso.set("Seleccionar")
 
@@ -188,7 +183,7 @@ def exeShowTransacciones():
 # Metodo: ejecutar mostrar impuestos
 def exeimpuestos():
     tvImpuestos.delete(*tvImpuestos.get_children())
-    registros = exe.showTransacciones()
+    registros = exe.impuestos()
     if registros:
         for i in registros:
             cadena = (i[0],i[1],i[2],i[3])

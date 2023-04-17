@@ -188,30 +188,30 @@ class usuarios:
                 except sqlite3.OperationalError:
                     print("Error de consulta")
             
-            if (descripcion=="" or monto==""):
+            if (tipo=="Seleccionar" or descripcion=="" or monto==""):
                 messagebox.showwarning("Advertencia!","Falta informacion!")
                 conx.close()
-            else:
-                if (categoria=="Egreso" and float(monto)>self.__presupuesto__):
+            
+            elif(categoria=="Egreso" and float(monto)>self.__presupuesto__):
                     messagebox.showwarning("Advertencia!","El monto excede el presupuesto dado!")
-                    self.__presupuesto__ = self.__presupuesto__
                     conx.close()
                     return self.__presupuesto__
-                else:
-                    ide = conseguirID()
-                    datos = (categoria, tipo, descripcion, monto, ide, fecha)
-                    consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
-                    c5.execute(consultaTransaccion,datos)
-                    if categoria=="Ingreso":
-                        self.__presupuesto__ += float(monto)
-                        messagebox.showinfo("Exito!","Registro completo!")
-                        registroTBimpuestos()
-                        return self.__presupuesto__
-                    else:
-                        self.__presupuesto__ -= float(monto)
-                        messagebox.showinfo("Exito!","Registro completo!")
-                        conx.close()
-                        return self.__presupuesto__
+            
+            else:
+                ide = conseguirID()
+                datos = (categoria, tipo, descripcion, monto, ide, fecha)
+                consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
+                c5.execute(consultaTransaccion,datos)
+                if categoria=="Ingreso":
+                    self.__presupuesto__ += float(monto)
+                    messagebox.showinfo("Exito!","Registro completo!")
+                    registroTBimpuestos()
+                    return self.__presupuesto__
+                if categoria=="Egreso":
+                    self.__presupuesto__ -= float(monto)
+                    messagebox.showinfo("Exito!","Registro completo!")
+                    conx.close()
+                    return self.__presupuesto__
         except sqlite3.OperationalError:
             print("Error de consulta")
      
