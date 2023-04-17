@@ -193,11 +193,11 @@ class usuarios:
                 conx.close()
             
             elif(categoria=="Egreso" and float(monto)>self.__presupuesto__):
-                    messagebox.showwarning("Advertencia!","El monto excede el presupuesto dado!")
-                    conx.close()
-                    return self.__presupuesto__
+                messagebox.showwarning("Advertencia!","El monto excede el presupuesto dado!")
+                conx.close()
+                return self.__presupuesto__
             
-            else:
+            elif(categoria=="Egreso" or categoria=="Ingreso") or (float(monto)<self.__presupuesto__):
                 ide = conseguirID()
                 datos = (categoria, tipo, descripcion, monto, ide, fecha)
                 consultaTransaccion = "INSERT INTO tbRegistros(categoria, tipo, descripcion, monto, usuario_id, fecha) VALUES (?, ?, ?, ?, ?, ?)"
