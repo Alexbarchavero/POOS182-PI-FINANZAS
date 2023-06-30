@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #cdd2d4;
+}
+
+.navbar {
+    background-color: #9CCC65;
+    overflow: hidden;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 17px;
+}
+
+.navbar a:hover {
+    background-color: #7CB342;
+    color: white;
+}
+
+.dropdown {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown .dropbtn {
+    font-size: 17px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+}
+
+.navbar a:hover, .dropdown:hover .dropbtn {
+    background-color: #7CB342;
+    color: white;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+}
+
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+/* Estilos CSS para las secciones */
+.section {
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #FFFFFF;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.section h2 {
+    color: #9CCC65;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+.section form {
+    display: flex;
+    flex-direction: column;
+}
+
+.section label {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+.section input[type="text"],
+.section input[type="password"] {
+    padding: 8px 12px;
+    font-size: 14px;
+    border-radius: 3px;
+    border: 1px solid #CCCCCC;
+    margin-bottom: 12px;
+}
+
+.section input[type="submit"] {
+    padding: 8px 16px;
+    font-size: 16px;
+    background-color: #9CCC65;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.section input[type="submit"]:hover {
+    background-color: #9CCC65;
+}

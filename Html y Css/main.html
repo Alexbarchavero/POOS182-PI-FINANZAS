@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="#" onclick="mostrarMensaje()">Inicio</a>
+        <div class="dropdown">
+            <button class="dropbtn">Menú ▼</button>
+            <div class="dropdown-content">
+                <a href="#registro" onclick="mostrarSeccion('registro')">Registro</a>
+                <a href="#iniciar-sesion" onclick="mostrarSeccion('iniciar-sesion')">Iniciar Sesión</a>
+                <a href="#actualizar-datos" onclick="mostrarSeccion('actualizar-datos')">Actualizar Datos</a>
+                <a href="#eliminar-cuenta" onclick="mostrarSeccion('eliminar-cuenta')">Eliminar Cuenta</a>
+            </div>
+        </div>
+    </div>
+    
+    <div id="mensaje-bienvenida" class="section">
+        <h2>Bienvenido/a</h2>
+        <p>¡Gracias por visitar nuestro sitio web!</p>
+    </div>
+    
+    <div class="section" id="registro">
+        <h2>Registro</h2>
+        <form>
+            <label for="nombre">Ingrese su nombre:</label><br>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre" required><br>
+            
+            <label for="contrasena">Ingrese una contraseña:</label><br>
+            <input type="password" id="contrasena" name="contrasena" placeholder="Contraseña" required><br>
+            
+            <label for="cuenta">Ingrese un número de cuenta de banco:</label><br>
+            <input type="text" id="cuenta" name="cuenta" placeholder="Número de cuenta" required><br>
+            
+            <input type="submit" value="Registrar">
+        </form>
+    </div>
+    
+    <div class="section" id="iniciar-sesion">
+        <h2>Iniciar Sesión</h2>
+        <form action="finanzas.html">
+            <label for="nombre-login">Ingrese su nombre:</label><br>
+            <input type="text" id="nombre-login" name="nombre-login" placeholder="Nombre" required><br>
+                
+            <label for="contrasena-login">Ingrese su contraseña:</label><br>
+            <input type="password" id="contrasena-login" name="contrasena-login" placeholder="Contraseña" required><br>
+                
+            <input type="submit" value="Iniciar Sesión">
+        </form>
+    </div>
+    
+    
+    <div class="section" id="actualizar-datos">
+        <h2>Actualizar Datos</h2>
+        <form>
+            <label for="nombre-actual">Nombre:</label><br>
+            <input type="text" id="nombre-actual" name="nombre-actual" placeholder="Nombre actual" required><br>
+            
+            <label for="contrasena-actual">Contraseña:</label><br>
+            <input type="password" id="contrasena-actual" name="contrasena-actual" placeholder="Contraseña actual" required><br>
+            
+            <label for="nuevo-nombre">Nuevo Nombre:</label><br>
+            <input type="text" id="nuevo-nombre" name="nuevo-nombre" placeholder="Nuevo Nombre" required><br>
+            
+            <label for="nueva-contrasena">Nueva Contraseña:</label><br>
+            <input type="password" id="nueva-contrasena" name="nueva-contrasena" placeholder="Nueva Contraseña" required><br>
+            
+            <label for="nuevo-cuenta">Nuevo número de cuenta:</label><br>
+            <input type="text" id="nuevo-cuenta" name="nuevo-cuenta" placeholder="Nuevo número de cuenta" required><br>
+            
+            <input type="submit" value="Actualizar Datos">
+        </form>
+    </div>
+    
+    <div class="section" id="eliminar-cuenta">
+        <h2>Eliminar Cuenta</h2>
+        <form>
+            <label for="nombre-eliminar">Nombre:</label><br>
+            <input type="text" id="nombre-eliminar" name="nombre-eliminar" placeholder="Nombre" required><br>
+            
+            <label for="contrasena-eliminar">Contraseña:</label><br>
+            <input type="password" id="contrasena-eliminar" name="contrasena-eliminar" placeholder="Contraseña" required><br>
+            
+            <input type="submit" value="Eliminar Cuenta">
+        </form>
+    </div>
+    
+    <script>
+        // Ocultar todas las secciones y mostrar el mensaje de bienvenida al cargar la página
+        window.onload = function() {
+            ocultarSecciones();
+            mostrarMensaje();
+        }
+        
+        // Función para ocultar todas las secciones
+        function ocultarSecciones() {
+            var secciones = document.getElementsByClassName('section');
+            for (var i = 0; i < secciones.length; i++) {
+                secciones[i].style.display = 'none';
+            }
+        }
+        
+        // Función para mostrar el mensaje de bienvenida y ocultar las secciones
+        function mostrarMensaje() {
+            ocultarSecciones();
+            document.getElementById('mensaje-bienvenida').style.display = 'block';
+        }
+        
+        // Función para mostrar una sección y ocultar el mensaje de bienvenida
+        function mostrarSeccion(seccion) {
+            ocultarSecciones();
+            document.getElementById(seccion).style.display = 'block';
+            document.getElementById('mensaje-bienvenida').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>
