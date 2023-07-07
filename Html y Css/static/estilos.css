@@ -87,6 +87,11 @@ body {
     font-size: 24px;
     margin-bottom: 20px;
 }
+.section h3{
+    color: #1BB3F0;
+    font-size: 12px;
+    margin-bottom: 20px;
+}
 
 .section form {
     display: flex;
@@ -107,7 +112,7 @@ body {
     margin-bottom: 12px;
 }
 
-.section input[type="submit"] {
+.section input[type="submit"], button {
     padding: 8px 16px;
     font-size: 16px;
     background-color: #1BB3F0;
@@ -117,6 +122,6 @@ body {
     cursor: pointer;
 }
 
-.section input[type="submit"]:hover {
+.section input[type="submit"],button:hover {
     background-color: #0B87BA;
 }

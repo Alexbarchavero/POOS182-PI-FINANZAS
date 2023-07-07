@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanzas</title>
-    <link rel="stylesheet" href="finanzas.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename="finanzas.css")}}">
 </head>
 <body>
     <div class="navbar">
@@ -14,8 +14,7 @@
             <button class="dropbtn">Menú ▼</button>
             <div class="dropdown-content">
                 <a href="#presupuesto" onclick="mostrarSeccion('presupuesto')">Presupuesto</a>
-                <a href="#ingreso" onclick="mostrarSeccion('ingreso')">Ingreso</a>
-                <a href="#egreso" onclick="mostrarSeccion('egreso')">Egreso</a>
+                <a href="#transacciones" onclick="mostrarSeccion('transacciones')">Transacciones</a>
                 <a href="#impuestos" onclick="mostrarSeccion('impuestos')">Impuestos</a>
                 <a href="#movimientos" onclick="mostrarSeccion('movimientos')">Movimientos</a>
                 <a href="#cierre-sesion" onclick="mostrarSeccion('cierre-sesion')">Cierre de Sesión</a>
@@ -30,32 +29,60 @@
     
     <div class="section" id="presupuesto">
         <h2>Presupuesto</h2>
-        <!-- Contenido de la sección Presupuesto -->
+        <label for="presupuesto-input">Presupuesto</label><br>
+        <input type="text" id="presupuesto-input"><br>
+        <button id="definir-presupuesto-btn">Definir presupuesto</button><br>
+        <label for="presupuesto-amount">Presupuesto $</label><br>
     </div>
     
-    <div class="section" id="ingreso">
+    <div class="section" id="transacciones">
         <h2>Ingreso</h2>
-        <!-- Contenido de la sección Ingreso -->
-    </div>
-    
-    <div class="section" id="egreso">
-        <h2>Egreso</h2>
-        <!-- Contenido de la sección Egreso -->
+        <label for="tipo-transaccion">Tipo</label><br>
+        <select id="tipo-transaccion">
+            <option value="ingreso">Ingreso</option>
+            <option value="egreso">Egreso</option>
+        </select>
+        <br>
+        <label for="tipo-pago">Tipo de pago</label>
+        <br>
+        <select id="tipo-pago">
+            <option value="efectivo">Efectivo</option>
+            <option value="debito">Debito</option>
+        </select>
+        <br>
+        <label for="descripcion">Descripcion</label>
+        <br>
+        <input type="text" id="descripcion">
+        <br>
+        <label for="monto">Monto</label>
+        <br>
+        <input type="text" id="monto">
+        <br>
+        <button id="anadir-transaccion-btn">Añadir transaccion</button>
     </div>
     
     <div class="section" id="impuestos">
-        <h2>Impuestos</h2>
-        <!-- Contenido de la sección Impuestos -->
+        <h2>Impuestos</h2><br>
+        <label for="impuestos-label">Impuestos</label><br>
+        <table>
+            <!-- Contenido de la tabla de impuestos -->
+        </table><br>
+        <button id="consultar-impuestos-btn">Consultar impuestos</button><br>
+        <button id="impuestos-totales-btn">Impuestos totales</button>
     </div>
     
     <div class="section" id="movimientos">
-        <h2>Movimientos</h2>
-        <!-- Contenido de la sección Movimientos -->
-    </div>
+        <h2>Movimientos</h2><br>
+        <label for="movimientos-label">Movimientos</label><br>
+        <table>
+            <!-- Contenido de la tabla de movimientos -->
+        </table><br>
+        <button id="consultar-movimientos-btn">Consultar</button>
+    </div>    
     
     <div class="section" id="cierre-sesion">
         <h2>Cierre de Sesión</h2>
-        <form action="main.html">
+        <form action="inicio.html">
             <input type="submit" value="Cierre de Sesion">
         </form>
     </div>

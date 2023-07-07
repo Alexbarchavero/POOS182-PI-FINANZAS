@@ -54,7 +54,7 @@ panel2.add(p2_3, text = "Impuestos")
 panel2.add(p2_4, text = "Movimientos")
 panel2.add(p2_5, text = "Cerrar sesion")
 # Ocultamos de inicio la ventana 2
-w2.withdraw()
+# w2.withdraw()
 
 # Variables
 name = StringVar()

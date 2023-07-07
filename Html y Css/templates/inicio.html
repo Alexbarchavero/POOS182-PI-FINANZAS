@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-    <link rel="stylesheet" href="estilos.css">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename="estilos.css")}}">
 </head>
 <body>
     <div class="navbar">
@@ -28,7 +28,7 @@
     
     <div class="section" id="registro">
         <h2>Registro</h2>
-        <form>
+        <form action="/guardar" method="POST">
             <label for="nombre">Ingrese su nombre:</label><br>
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required><br>
             
@@ -38,8 +38,15 @@
             <label for="cuenta">Ingrese un número de cuenta de banco:</label><br>
             <input type="text" id="cuenta" name="cuenta" placeholder="Número de cuenta" required><br>
             
-            <input type="submit" value="Registrar">
+            <button type="submit">Registrar</button>
         </form>
+        {% with mensajes= get_flashed_messages() %}
+            {% if mensajes %}
+                {% for msj in mensajes%}
+                    <h3>{{msj}}</h3>
+                {%endfor%}
+            {% endif %}
+        {% endwith %}
     </div>
     
     <div class="section" id="iniciar-sesion">
