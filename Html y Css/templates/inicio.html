@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inicio</title>
-    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename="estilos.css")}}">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='estilos.css')}}">
 </head>
 <body>
     <div class="navbar">
@@ -36,7 +36,7 @@
     
     <div class="section" id="registro">
         <h2>Registro</h2>
-        <form action="/guardar" method="POST">
+        <form action="/registrar" method="POST">
             <label for="nombre">Ingrese su nombre:</label><br>
             <input type="text" id="nombre" name="nombre" placeholder="Nombre" required><br>
             
@@ -52,7 +52,7 @@
     
     <div class="section" id="iniciar-sesion">
         <h2>Iniciar Sesión</h2>
-        <form action="finanzas.html">
+        <form action="/finanzas" method="post">
             <label for="nombre-login">Ingrese su nombre:</label><br>
             <input type="text" id="nombre-login" name="nombre-login" placeholder="Nombre" required><br>
                 
@@ -66,7 +66,7 @@
     
     <div class="section" id="actualizar-datos">
         <h2>Actualizar Datos</h2>
-        <form>
+        <form action="/actualizar" method="POST">
             <label for="nombre-actual">Nombre:</label><br>
             <input type="text" id="nombre-actual" name="nombre-actual" placeholder="Nombre actual" required><br>
             
@@ -80,7 +80,7 @@
             <input type="password" id="nueva-contrasena" name="nueva-contrasena" placeholder="Nueva Contraseña" required><br>
             
             <label for="nuevo-cuenta">Nuevo número de cuenta:</label><br>
-            <input type="text" id="nuevo-cuenta" name="nuevo-cuenta" placeholder="Nuevo número de cuenta" required><br>
+            <input type="text" id="nueva-cuenta" name="nueva-cuenta" placeholder="Nuevo número de cuenta" required><br>
             
             <input type="submit" value="Actualizar Datos">
         </form>

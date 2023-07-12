@@ -87,6 +87,11 @@ body {
     font-size: 24px;
     margin-bottom: 20px;
 }
+.section h3{
+    color: #1BB3F0;
+    font-size: 18px;
+    margin-bottom: 20px;
+}
 
 .section form {
     display: flex;
